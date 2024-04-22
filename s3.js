@@ -33,16 +33,18 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server, path: '/ws/send' });
 
 wss.on('connection', (ws, req) => {
-    console.log('WebSocket Client Connected');
-
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const username = urlParams.get('username');
+
+    console.log(`WebSocket Client Connected (${username})`);
 
     if (!username) {
         console.error("Username is missing");
         ws.close();
         return;
     }
+
+    ws.username = username;
 
     ws.on('message', (message) => {
         const req = {
@@ -53,15 +55,15 @@ wss.on('connection', (ws, req) => {
         // После получения сообщения по WebSocket отправляем его на другой сервер
         axios.post('http://127.0.0.1:8081/api/v1/message/send', req)
             .then(response => {
-                console.log('Message sent to other server successfully');
+                console.log(`Message sent to other server successfully (${ws.username}): ${message.toString()}`);
             })
             .catch(error => {
-                console.error('Error sending message to other server:', error);
+                console.error(`Error sending message to other server (${ws.username}): ${error}`);
             });
     });
 
     ws.on('close', () => {
-        console.log(`WebSocket Client Disconnected (${username})`);
+        console.log(`WebSocket Client Disconnected (${ws.username})`);
     });
 });
 
