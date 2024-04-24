@@ -10,23 +10,18 @@ const swaggerDocument = YAML.load('./WebSocket swagger.yml');
 
 app.use(express.json());
 
-// Определение маршрутов
 app.post('/api/v1/receive', (req, res) => {
-    // Обработка полученного сообщения
-    const receivedMessage = req.body;
-    // Здесь вы можете выполнить необходимую логику для обработки сообщения
-    console.log('Received message:', receivedMessage);
-    // Отправляем сообщение через WebSocket
+    console.log('Received message:', req.body);
+
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(receivedMessage));
+            client.send(JSON.stringify(req.body));
         }
     });
 
     res.status(200).json({ message: 'Сообщение успешно получено' });
 });
 
-// Использование Swagger UI для отображения документации
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const server = http.createServer(app);
@@ -52,7 +47,7 @@ wss.on('connection', (ws, req) => {
             "content": message.toString(),
             "time": Date.now()
         }
-        // После получения сообщения по WebSocket отправляем его на другой сервер
+
         axios.post('http://127.0.0.1:8081/api/v1/message/send', req)
             .then(response => {
                 console.log(`Message sent to other server successfully (${ws.username}): ${message.toString()}`);

@@ -36,3 +36,7 @@ components:
           type: string
           example: hello!
           description: Текст сообщения
+        error:
+          type: boolean
+          example: false
+          description: Признак ошибки

@@ -7,14 +7,14 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 
 app.use(express.json());
 
-// Определение маршрутов
 app.post('/api/v1/message/send', (req, res) => {
-    // Обработка полученного сообщения
-    // console.log('Receiver req: ', req.hostname);
-    const receivedMessage = req.body;
-    // Здесь вы можете выполнить необходимую логику для обработки сообщения
+    const receivedMessage = JSON.parse(JSON.stringify(req.body));
+
     res.status(200).json({ message: 'Сообщение успешно получено ' + receivedMessage });
 
+    receivedMessage['error'] = true;
+
+    console.log(receivedMessage);
     axios.post('http://127.0.0.1:8080/api/v1/receive', req.body)
         .then(response => {
             console.log('Message sent to other server successfully');
@@ -24,7 +24,6 @@ app.post('/api/v1/message/send', (req, res) => {
         });
 });
 
-// Использование Swagger UI для отображения документации
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const PORT = process.env.PORT || 8081;
