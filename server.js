@@ -13,7 +13,7 @@ app.post('/api/v1/message/send', (req, res) => {
 
     res.status(200).json({ message: 'Сообщение успешно получено ' + receivedMessage });
 
-    receivedMessage.error = Math.random() <= 0.5;
+    receivedMessage.error = true;
 
     logger(JSON.stringify(receivedMessage));
     axios.post('http://127.0.0.1:8080/api/v1/receive', receivedMessage)

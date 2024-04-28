@@ -13,12 +13,21 @@ app.use(express.json());
 
 app.post('/api/v1/receive', (req, res) => {
     logger('Received message:', JSON.stringify(req.body));
-    logger("req.body.error=" +req.body.error);
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(req.body));
+            if (req.body.error) {
+                if (req.body.username === client.username) {
+                    client.send(JSON.stringify(req.body));
+                    logger("ERROR MESSAGE SENT TO THE AUTHOR", JSON.stringify(req.body));
+                }
+            } else {
+                client.send(JSON.stringify(req.body));
+                logger("MESSAGE SENT TO AlL USERS", JSON.stringify(req.body));
+            }
         }
     });
+
+
 
     res.status(200).json({ message: 'Сообщение успешно получено' });
 });
