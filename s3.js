@@ -60,7 +60,6 @@ wss.on('connection', (ws, req) => {
 
         axios.post('http://127.0.0.1:5500/api/v1/message/send', req)
             .then(response => {
-                logger(JSON.stringify(response));
                 logger(`Message sent to other server successfully (${ws.username}): ${message.toString()}`);
             })
             .catch(error => {
