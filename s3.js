@@ -49,7 +49,7 @@ wss.on('connection', (ws, req) => {
             "time": Date.now()
         }
 
-        axios.post('http://127.0.0.1:8081/api/v1/message/send', req)
+        axios.post('http://127.0.0.1:5500/api/v1/message/send', req)
             .then(response => {
                 logger(`Message sent to other server successfully (${ws.username}): ${message.toString()}`);
             })
