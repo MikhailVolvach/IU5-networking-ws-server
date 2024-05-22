@@ -72,7 +72,7 @@ wss.on('connection', (ws, req) => {
     });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     logger(`Сервер запущен на порту ${PORT}`);
 });
